@@ -91,6 +91,7 @@ async function createSchema(conn) {
 	const Cik = require('./Cik');
 	const CikVary = require('./CikVary');
 
+	// SHL: Again, the formatting is completely different. Can you explain why this one item is separated from the rest?
 	// TimescaleDB
 	const TimeScaleDBReading = require('./TimeScaleDB/Reading');
 

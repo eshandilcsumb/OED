@@ -1,3 +1,4 @@
+-- SHL: I want to discuss what this is for and where it should be located.
 /*
  * Drop the TimescaleDB reading continuous aggregates in reverse dependency
  * order. The daily aggregate depends on the hourly aggregate, so it must be

@@ -28,6 +28,8 @@
 /*
  * 1. Create continuous aggregate for hourly meter readings.
  *
+ SHL: I have seen these elsewhere. At some point in time they no longer matter. I'm thinking these should go
+ and be put into PR documentation. It is about the change and not the code.
  * This continuous aggregate replaces the existing
  * meter_hourly_readings_unit materialized view using TimescaleDB's
  * incremental aggregation engine.

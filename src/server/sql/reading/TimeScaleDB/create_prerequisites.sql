@@ -1,4 +1,7 @@
+-- SHL: did this work build upon work from previous teams? Is the git history/record preserved?
 /*
+SHL: I'm not an advocate for putting the file name in a file. It must be where it says.
+I wonder if this all should br in the Reading model since it may follow that pattern.
  * create_prerequisites.sql
  *
  * Purpose:
@@ -53,6 +56,7 @@
  *   unit_represent/sec_in_rate:
  *       Original unit metadata required to correctly aggregate quantity, flow,
  *       and raw readings.
+ SHL: I'd like to discuss if start/end should be a tsrange or not.
  */
 CREATE TABLE IF NOT EXISTS hypertable_hourly_split (
     meter_id INTEGER NOT NULL,
@@ -83,6 +87,9 @@ SELECT create_hypertable(
 /*
  * 3. Enforce uniqueness of hourly slices.
  *
+ SHL: Can you explain why they might now be unique?
+ I'd like to discuss if all the items in the index are needed and the order. (maybe doing index only calculations)
+ If this matters then it should be documented.
  * The unique index prevents duplicate hourly slices for the same meter and
  * time range and supports efficient maintenance operations.
  * This index also improves lookup performance when synchronizing changed
@@ -117,6 +124,8 @@ ON hypertable_hourly_split
  */
 CREATE OR REPLACE FUNCTION update_hourly_hypertable()
 RETURNS trigger
+-- SHL: Need to discuss all changes in placement/syntax so OED is consistent. Currently uses $$Language.
+-- If changes are agreed to then a complete list of all is needed so they can be rolled out.
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -135,7 +144,7 @@ BEGIN
 
     END IF;
 
-
+-- SHL: I think you explain in a meeting why you have to delete first. If so, add to comments.
     /*
      * UPDATE may change the reading duration or hour boundaries.
      * Remove the hourly slices generated from the previous version
@@ -171,6 +180,7 @@ BEGIN
 		CASE
 			WHEN u.unit_represent = 'quantity'::unit_represent_type THEN
 
+-- SHL: I want to discuss how this logic differs from the old view logic to understand how to covers all the special cases.
 				(
 					NEW.reading * 3600 /
 					extract(
@@ -275,6 +285,7 @@ $$;
  * trigger is removed first to make this script safe to rerun during development
  * and deployment.
  */
+ -- SHL: Need to discuss naming. You shorten trigger to trg but other items are not.
 DROP TRIGGER IF EXISTS trg_readings_update_hourly_hypertable
 ON readings;
 
@@ -292,6 +303,7 @@ ON readings;
  * trigger. They track affected time ranges through invalidation and are
  * refreshed separately using:
  *
+ SHL: Want to discuss tradeoff and usage. Not sure I understand the usage/code.
  *     refresh_continuous_aggregate()
  *
  *     or a continuous aggregate refresh policy.
@@ -302,6 +314,7 @@ ON readings;
  *       Creates hourly split records for the new reading.
  *
  *   UPDATE:
+ SHL: Not a big deal but you keep lines very short and this creates more lines.
  *       Removes old hourly split records and recreates them from the
  *       modified reading.
  *
@@ -314,7 +327,7 @@ ON readings
 FOR EACH ROW
 EXECUTE FUNCTION update_hourly_hypertable();
 
-
+-- SHL: This seems to mirror/duplicate code in another file. If true, any way to avoid this?
 /*
  * Rebuild hypertable_hourly_split from the current readings and cik_vary rows.
  *
@@ -429,3 +442,5 @@ BEGIN
 	) gen(interval_start);
 END;
 $$;
+
+-- SHL: How does daily relate and why no also needed?

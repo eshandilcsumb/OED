@@ -19,6 +19,7 @@ const { log, LogLevel } = require('../log');
 // TODO: Move logging disabling to a better place.
 log.level = LogLevel.SILENT;
 log.emailLevel = LogLevel.SILENT;
+// SHL: Need to discuss more and figure out.
 log.logToFile = false;
 
 const User = require('../models/User');

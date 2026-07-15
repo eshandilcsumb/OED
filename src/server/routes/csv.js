@@ -178,6 +178,8 @@ router.post('/readings', validateReadingsCsvUploadParams, async (req, res) => {
 		const conn = getConnection();
 		({ isAllReadingsOk, msgTotal, startTimestamp, endTimestamp } = await uploadReadings(req, res, csvFilepath, conn));
 		if (isRefreshReadings) {
+			// SHL: Another explicit use of start/end. If it must stay we need to discuss this I'm not sure if it
+			// is giving the values you really want. If this is off then note we really need to be careful.
 			// Refresh readings so show when daily data is used.
 			await refreshAllReadingViews(startTimestamp && endTimestamp
 				? { startTimestamp, endTimestamp, rebuild: false }

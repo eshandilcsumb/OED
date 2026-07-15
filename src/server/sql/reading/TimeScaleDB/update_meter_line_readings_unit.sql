@@ -1,3 +1,18 @@
+/* SHL
+It appears this was copied from the original so all the git history was lost. I think it could be better to
+bring back the original file with history and then modify from there. I see you are separating the files
+but it might be possible to copy and then delete. We can discuss.
+The original commenting is mostly gone. While I appreciate you added commenting, I'm not sure all of that
+should have been removed.
+The file is using space indenting but OED wants tabs.
+I can see some of the uses with /* */ make sense but I'm not as excited about so many virtually blank lines
+that make the file much longer. I think basic comments might work with -- or single line /* */ if you are trying
+to indicated that it is for a block.
+You have chosen what seems to be a new formatting style. As above, OED has tried to reduce the number of lines
+when appropriate and has a style. We need to discuss if a change should be made and how the entire code base
+would be made consistent.
+I think we should discuss the file names to decide how to do all of them like this. The update_ and _unit might go.
+*/
 /*
  * Function: meter_line_readings_unit
  *

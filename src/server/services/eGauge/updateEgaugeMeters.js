@@ -9,6 +9,7 @@ const updateMeters = require('../updateMeters');
 const { log } = require('../../log');
 const { getConnection } = require('../../db');
 const readEgaugeData = require('./readEgaugeData');
+// SHL: I don't think I like this change. There is a reason OED uses models to centralize code.
 const { refreshAllReadingViews } = require('../refreshAllReadingViews');
 
 /**

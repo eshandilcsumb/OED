@@ -7,10 +7,12 @@
 const { log } = require('../log');
 const { getConnection } = require('../db');
 const Reading = require('../models/Reading');
+// SHL: I generally don't like renaming items from the original file as it confuses people.
 const TimeScaleDBReading = require('../models/TimeScaleDB/Reading');
 
 // Prevent concurrent imports or maintenance jobs from rebuilding and
 // refreshing dependent reading aggregates at the same time.
+// SHL: Where did this number come from?
 const REFRESH_ADVISORY_LOCK_ID = 724536221;
 
 async function timedRefresh(label, operation) {
@@ -19,12 +21,15 @@ async function timedRefresh(label, operation) {
 	log.info(`${label} completed in ${Date.now() - start} ms`);
 }
 
+// SHL: I want to discuss how this works, how values may be passed.
 /** 
  * This function is changed from refreshing hourly and daily readings
  * views in parallel using Promise.all() into one by one because
  * daily readings calculation depends on hourly readings.
 */
 async function refreshAllReadingViews(options = {}) {
+	// SHL: Just noting one more place that needs the time.
+	// SHL: This needs commenting. Not fully reviewed. Is this going to go away when the old view are gone?
 	const { startTimestamp = null, endTimestamp = null, rebuild = startTimestamp === null && endTimestamp === null } = options;
 	if ((startTimestamp === null) !== (endTimestamp === null)) {
 		throw new Error('Both startTimestamp and endTimestamp are required for a bounded reading refresh.');
@@ -50,7 +55,8 @@ async function refreshAllReadingViews(options = {}) {
 	});
 	log.info('All reading aggregates synchronized');
 }
-
+// SHL: Should the function just be renamed or is this for the npm script commands?
+// Why do both need to be exported when seem to be an alias?
 const synchronizeReadingAggregates = refreshAllReadingViews;
 
 module.exports = { refreshAllReadingViews, synchronizeReadingAggregates };

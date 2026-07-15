@@ -59,6 +59,8 @@ async function loadArrayInput(dataRows, meterID, mapRowToModel, timeSort, readin
 					'\n and the pipeline returned these messages: ' + msgTotal;
 			})
 	}
+	// SHL: I want to discuss this and all code like this. I was under the impression that TSD could automatically
+	// update without having to know the time ranges that were changed. This avoids errors/mistakes.
 	const readingRange = readingsToInsert.length === 0 ? {} : {
 		startTimestamp: readingsToInsert.reduce((earliest, reading) =>
 			reading.startTimestamp.isBefore(earliest) ? reading.startTimestamp : earliest,

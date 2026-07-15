@@ -42,6 +42,8 @@ async function prepareTest(unitData, conversionData, meterData, groupData = []) 
 	await insertGroups(groupData, conn);
 	await redoCikVary(conn);
 
+	// SHL: Noting that the logic used to be different. I suspect this fixes an issue in the old code
+	// but I want to think about it more.
     if (groupData.length != 0) {
         await Group.refreshGroupsDeepMetersView(conn);
     }

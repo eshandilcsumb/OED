@@ -125,6 +125,9 @@ mocha.describe('Line & bar Readings', () => {
 			expect(reading_rate).to.be.closeTo(((50 * 1) + (100 * 2)) / (1 + 2), 0.0001);
 		});
 
+		// SHL: If this is only legacy testing then it should not be here. It will not stay in the code base.
+		// This is a very weak test (if I understand it) and OED has gone away from this test. There are better
+		// ones.
 		mocha.it('TimescaleDB hourly and daily aggregates match the legacy views', async () => {
 			await Reading.insertAll([
 				new Reading(meter.id, 100, timestamp1, timestamp2),

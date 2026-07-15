@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+ // SHL: Want to discuss why this is not part of the current Reading model.
 const database = require('../database');
 const moment = require('moment');
 

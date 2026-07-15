@@ -20,6 +20,8 @@
  *   meter_daily_readings_unit_cagg
  *
  *
+ SHL: I agree but it also reduces computation and the need to deal with edge cases. You don't need to add this.
+I suspect I will want to go through all the comments and augment them with information I think is useful. FYI.
  * Building the daily aggregate on top of the hourly aggregate allows
  * TimescaleDB to reuse previously computed hourly results instead of
  * recalculating daily values from the raw split data. This significantly
@@ -46,6 +48,7 @@
  * returns a PostgreSQL tsrange representing the entire day. This matches the
  * interval representation used throughout the reporting layer.
  *
+ SHL: I saw this elsewhere. I really think anyone who knows this type of code will know what a tsrange is.
  * Example:
  *
  *     ("2021-06-01 00:00:00","2021-06-02 00:00:00")
@@ -63,7 +66,7 @@ SELECT
      */
     meter_id,
 
-
+-- SHL: We need to discuss if this works properly if hourly points are missing as OED currently does.
     /*
      * Average hourly reading rate across the day.
      */
@@ -124,7 +127,7 @@ ORDER BY
 
 WITH NO DATA;
 
-
+-- SHL: This, I think, deserves a comment.
 ALTER MATERIALIZED VIEW meter_daily_readings_unit_cagg
 SET (
     timescaledb.materialized_only = false
