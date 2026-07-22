@@ -15,5 +15,5 @@ WITH NO DATA;
 
 ALTER MATERIALIZED VIEW group_daily_readings_unit_cagg
 SET (
-    timescaledb.materialized_only = false
+    timescaledb.materialized_only = true
 );
