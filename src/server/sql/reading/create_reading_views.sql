@@ -775,7 +775,7 @@ BEGIN
 		bars.interval_start AS start_timestamp,
 		bars.interval_start + bar_width AS end_timestamp
 
-		FROM (((group_daily_readings_unit readings
+		FROM (((group_daily_readings_unit_cagg readings
 			INNER JOIN generate_series(real_start_stamp, real_end_stamp, bar_width) bars(interval_start)
 			ON tsrange(bars.interval_start, bars.interval_start + bar_width, '[]') @> readings.time_interval)
 			-- Don't return bar data if raw since cannot sum.

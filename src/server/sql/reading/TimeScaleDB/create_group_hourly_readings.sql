@@ -1,23 +1,43 @@
-CREATE MATERIALIZED VIEW group_hourly_readings_unit_cagg AS
+/*
+ * Create continuous aggregate for hourly group readings.
+ *
+ * Data flow:
+ *
+ *   meter_hourly_readings_unit_cagg
+ *              |
+ *              | (expanded into group rows)
+ *              v
+ *   group_hourly_readings_unit_ht
+ *              |
+ *              v
+ *   group_hourly_readings_unit_cagg
+ *
+ * The group hypertable already contains one row per
+ * group, graphic unit, and hourly bucket.
+ *
+ * Therefore, this continuous aggregate only performs
+ * the aggregation of readings for each group/hour
+ * without joining against groups_deep_meters during
+ * query execution.
+ */
+
+CREATE MATERIALIZED VIEW group_hourly_readings_unit_cagg
+WITH (timescaledb.continuous) AS
 SELECT
-    gdm.group_id,
-    mh.graphic_unit_id,
-    mh.bucket,
-    SUM(mh.reading_rate) AS reading_rate
-FROM meter_hourly_readings_unit_cagg mh
-INNER JOIN groups_deep_meters gdm
-    ON mh.meter_id = gdm.meter_id
-INNER JOIN LATERAL unnest(
-    get_graphic_unit(gdm.group_id)
-) AS gu(graphic_unit_id)
-    ON mh.graphic_unit_id = gu.graphic_unit_id
+    group_id,
+    graphic_unit_id,
+    time_bucket('1 hour', bucket) AS bucket,
+    SUM(reading_rate) AS reading_rate,
+    SUM(max_rate) AS max_rate,
+    SUM(min_rate) AS min_rate
+FROM group_hourly_readings_unit_ht
 GROUP BY
-    gdm.group_id,
-    mh.graphic_unit_id,
-    mh.bucket
+    group_id,
+    graphic_unit_id,
+    time_bucket('1 hour', bucket)
 WITH NO DATA;
 
 ALTER MATERIALIZED VIEW group_hourly_readings_unit_cagg
 SET (
-    timescaledb.materialized_only = true
+    timescaledb.materialized_only = false
 );
